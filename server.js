@@ -18,19 +18,14 @@ const connectDB = async () => {
 
     const db = client.db('companyDB');
 
-    db.collection('employees')
-      .find({ department: 'IT' })
-      .toArray()
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-
     app.use(cors());
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
+    
+    app.use((req, res, next) => {
+      req.db = db;
+      next();
+    });
 
     app.use('/api', employeesRoutes);
     app.use('/api', departmentsRoutes);
